@@ -1,111 +1,119 @@
 import 'package:flutter/material.dart';
-
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+import 'package:syntax_highlighter/syntax_highlighter.dart';
+import 'package:url_launcher/url_launcher.dart';
+void main(){
+  runApp(UTS());
+}
+class UTS extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
+      home: DefaultTabController(
+        length: choices.length,
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('UTS'),
+            leading: Icon(Icons.home),
+            backgroundColor: Color(0xFF33E1ED),
+            bottom: TabBar(
+              indicatorColor: Color(0xFFFFFF8D),
+              labelStyle: TextStyle(fontSize: 10.0, fontWeight: FontWeight.w900),
+              tabs: choices.map((Choice choice) {
+                return Tab(
+                  text: choice.type,
+                );
+              }).toList()
+            ),
+          ),
+          body: TabBarView(
+            children: choices.map((Choice choice) {
+                return Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: Halaman(choice: choice),
+                );
+            }).toList(),
+          ),
+        ),
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
+class Choice {
+  const Choice({this.type,this.dec,this.code});
+  final String type;
+  final String dec;
+  final String code;
 }
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+// create array list
+const String codeButton = "RaisedButton(color: Color(0xFF33E1ED),textColor: Colors.white,child: Text('Load More'),onPressed: () {})";
+const String codeToast = "showToast('Hello FilledStacks',duration: Duration(seconds: 2),position: ToastPosition.bottom,backgroundColor: Colors.white,radius: 5.0,textStyle: TextStyl(fontSize: 16.0, color: Colors.black),);";
+const String codeText = "Text('Hello, Krismon! How are you?',textAlign: TextAlign.center, overflow: TextOverflow.ellipsis,style: TextStyle(fontWeight: FontWeight.bold),)";
+const String codeTextField = "";
+const String codeNav = "";
+List<Choice> choices = const <Choice> [
+  const Choice(type: 'BUTTON',dec: "A material design raised button.A raised button is based on a Material widget whose Material.elevation increases when the button is pressed.\nUse raised buttons to add dimension to otherwise mostly flat layouts, e.g. in long busy lists of content, or in wide spaces. Avoid using raised buttons on already-raised content such as dialogs or cards.\nIf the onPressed callback is null, then the button will be disabled and by default will resemble a flat button in the disabledColor. If you are trying to change the button's color and it is not having any effect, check that you are passing a non-null onPressed handler.\nIf you want an ink-splash effect for taps, but don't want to use a button, consider using InkWell directly.\nRaised buttons have a minimum size of 88.0 by 36.0 which can be overridden with ButtonTheme.",code: codeButton),
+  const Choice(type: 'TOAST',dec: "Andorid Toast can be used to display information for the short period of time. A toast contains message to be displayed quickly and disappears after sometime.",code: codeToast),
+  const Choice(type: 'TEXT',dec: "The Text widget displays a string of text with single style. The string might break across multiple lines or might all be displayed on the same line depending on the layout constraints.\nThe style argument is optional. When omitted, the text will use the style from the closest enclosing DefaultTextStyle. If the given style's TextStyle.inherit property is true (the default), the given style will be merged with the closest enclosing DefaultTextStyle. This merging behavior is useful, for example, to make the text bold while using the default font family and size.",code: codeText),
+  const Choice(type: 'TEXT FIELD',dec: '',code: codeTextField),
+  const Choice(type: 'NAVBAR',dec: '',code: codeNav),
+];
+// create elemen tabbar
+class Halaman extends StatelessWidget {
+  // url
+  Future launchURL(String url) async {
+    if(await canLaunch(url)) {
+      await launch(url);
+    }else{
+      print('Tidak bisa mengubungkan ke ${url}');
+    }
   }
-
+  const Halaman({Key key, this.choice}) : super(key: key);
+  final Choice choice;
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
+    final TextStyle textStyle = Theme.of(context).textTheme.display1;
+    // syntax highlighter
+     final SyntaxHighlighterStyle style =
+        Theme.of(context).brightness == Brightness.dark
+            ? SyntaxHighlighterStyle.darkThemeStyle()
+            : SyntaxHighlighterStyle.lightThemeStyle();
+    return Card(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(choice.type, style: textStyle),
+              Text(choice.dec, textAlign: TextAlign.justify,),
+              Padding(
+                padding: const EdgeInsets.only(top:10.0),
+                child: Text('Contoh Code', style: textStyle),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0,bottom: 10.0),
+                child: RichText(
+                  text: TextSpan(
+                    children: <TextSpan> [
+                        DartSyntaxHighlighter(style).format(choice.code),
+                      ]
+                    ),
+                  ),
+              ),
+              RaisedButton(
+                color: Color(0xFF33E1ED),
+                textColor: Colors.white,
+                child: Text('Load More'),
+                onPressed: (){
+                  launchURL('https://google.com');
+                },
+              )
+            ],
+          ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
